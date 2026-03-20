@@ -10,12 +10,8 @@ export const revalidate = 0;
 // Helper to format date if needed
 function formatDatePickerToDB(date: string) {
   if (!date) return null;
-  const [year, month, day] = date.split('-');
-  // The user gave 20/3/2026. This might be D/M/YYYY or DD/MM/YYYY.
-  // We'll try to match both or just one if we can.
-  // For now, let's assume it's DD/MM/YYYY or D/M/YYYY.
-  // Prisma doesn't have a regex easily, so we might need to match the specific string.
-  return `${parseInt(day)}/${parseInt(month)}/${year}`;
+  // Database stores date as YYYY-MM-DD (string), so we return it directly
+  return date;
 }
 
 // Server Action to fetch data
