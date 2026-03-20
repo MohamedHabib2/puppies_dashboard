@@ -1,0 +1,17 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model CityProgress {
+  id     Int     @id @default(autoincrement())
+  city   String  @unique
+  status String? @default("working")
+  pages  Int?
+
+  @@map("cities_table")
+}
