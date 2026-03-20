@@ -3,34 +3,49 @@
   grid-template-columns: 280px 1fr;
   height: 100vh;
   overflow: hidden;
+  background: var(--bg-color);
 }
 
 .sidebar {
   background: var(--sidebar-bg);
   border-right: 1px solid var(--card-border);
-  padding: 30px;
+  padding: 32px 24px;
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  gap: 40px;
+  position: relative;
+  z-index: 10;
 }
 
 .brand {
   display: flex;
   align-items: center;
-  gap: 12px;
-  font-size: 1.25rem;
+  gap: 14px;
+  font-size: 1.15rem;
   font-weight: 700;
   color: #fff;
+  letter-spacing: -0.01em;
+}
+
+.brandIconWrapper {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--primary-color), var(--text-accent));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
 }
 
 .brandIcon {
-  color: var(--text-accent);
+  color: #fff;
 }
 
 .nav {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
 .navLink {
@@ -40,103 +55,200 @@
   padding: 12px 16px;
   border-radius: 12px;
   color: var(--text-secondary);
+  font-size: 0.95rem;
   font-weight: 500;
-  transition: all 0.2s;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
 }
 
 .navLink:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.04);
   color: var(--text-primary);
+  transform: translateX(4px);
 }
 
 .navLink.active {
-  background: rgba(56, 189, 248, 0.1);
+  background: rgba(37, 99, 235, 0.1);
   color: var(--text-accent);
+  border: 1px solid rgba(37, 99, 235, 0.1);
+}
+
+.sidebarFooter {
+    margin-top: auto;
+    padding-top: 20px;
+    border-top: 1px solid var(--card-border);
+}
+
+.statusBadge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    background: rgba(16, 185, 129, 0.05);
+    border-radius: 20px;
+    font-size: 0.75rem;
+    color: var(--success-color);
+    font-weight: 600;
+}
+
+.statusPulse {
+    width: 6px;
+    height: 6px;
+    background: var(--success-color);
+    border-radius: 50%;
+    animation: pulse 1.5s infinite;
 }
 
 .main {
-  padding: 40px;
+  padding: 40px 48px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  gap: 32px;
+  background: var(--bg-gradient);
 }
 
 .header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-end;
 }
 
 .title {
-  font-size: 2rem;
+  font-size: 2.25rem;
   font-weight: 800;
-  margin-bottom: 8px;
-  background: linear-gradient(135deg, #fff, #94a3b8);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  margin-bottom: 4px;
+  color: #fff;
+  letter-spacing: -0.02em;
 }
 
 .subtitle {
   color: var(--text-secondary);
-  font-size: 1.1rem;
+  font-size: 1rem;
+}
+
+.headerActions {
+    display: flex;
+    gap: 16px;
+}
+
+/* Date Filter Styles */
+.filterWrapper {
+    display: flex;
+    align-items: center;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 4px 12px;
+    gap: 10px;
+    transition: all 0.2s ease;
+}
+
+.filterWrapper:focus-within {
+    border-color: var(--text-accent);
+    background: rgba(30, 41, 59, 0.5);
+    box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.1);
+}
+
+.filterIcon {
+    color: var(--text-secondary);
+}
+
+.dateInput {
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 0.9rem;
+    padding: 8px 0;
+    outline: none;
+    cursor: pointer;
+}
+
+.dateInput::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    opacity: 0.5;
+    cursor: pointer;
 }
 
 .statsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
 }
 
 .statCard {
-  padding: 24px;
+  padding: 28px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  transition: transform 0.2s;
+  gap: 12px;
+  position: relative;
+  overflow: hidden;
 }
 
-.statCard:hover {
-  transform: translateY(-4px);
+.statCard::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
 }
 
 .statHeader {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
 }
 
 .statTitle {
   color: var(--text-secondary);
-  font-size: 1rem;
-  font-weight: 500;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .statIcon {
   padding: 10px;
   border-radius: 12px;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.03);
 }
 
 .statValue {
   font-size: 2.5rem;
-  font-weight: 700;
+  font-weight: 800;
   color: #fff;
+  line-height: 1.1;
+}
+
+.statSub {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 
 .tableSection {
-  margin-top: 10px;
+  margin-top: 8px;
+}
+
+.tableHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
 }
 
 .sectionTitle {
-  font-size: 1.4rem;
+  font-size: 1.25rem;
   font-weight: 700;
-  margin-bottom: 20px;
+  color: #fff;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
 .tableContainer {
@@ -150,16 +262,20 @@
 
 .table th {
   text-align: left;
-  padding: 16px 20px;
+  padding: 18px 24px;
   color: var(--text-secondary);
-  font-weight: 500;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
   border-bottom: 1px solid var(--card-border);
 }
 
 .table td {
-  padding: 16px 20px;
+  padding: 20px 24px;
   border-bottom: 1px solid var(--card-border);
   color: var(--text-primary);
+  font-size: 0.95rem;
 }
 
 .table tr:last-child td {
@@ -167,80 +283,90 @@
 }
 
 .table tr {
-  transition: background 0.2s;
+  transition: background 0.2s ease;
 }
 
 .table tbody tr:hover {
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(255, 255, 255, 0.025);
 }
 
 .cityName {
   font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 10px;
+  color: #fff;
+}
+
+.badgeIndicator {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
 }
 
 .progressWrapper {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
 }
 
 .progressBar {
-  height: 6px;
-  width: 120px;
+  height: 8px;
+  flex: 1;
+  max-width: 140px;
   background: var(--progress-track);
-  border-radius: 4px;
+  border-radius: 10px;
   overflow: hidden;
 }
 
 .progressFill {
   height: 100%;
-  background: var(--text-accent);
-  border-radius: 4px;
-  transition: width 0.4s ease;
+  background: linear-gradient(90deg, var(--primary-color), var(--text-accent));
+  border-radius: 10px;
+  transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .progressFill.completed {
   background: var(--success-color);
 }
 
-.statusIndicator {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  display: inline-block;
+.fileCount {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 500;
 }
 
-.statusIndicator.pending {
-  background: var(--warning-color);
-  box-shadow: 0 0 10px var(--warning-color);
+.dateLabel {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    background: rgba(255,255,255,0.03);
+    padding: 4px 10px;
+    border-radius: 6px;
 }
 
-.statusIndicator.completed {
-  background: var(--success-color);
-  box-shadow: 0 0 10px var(--success-color);
+.emptyState {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.8;
 }
 
-.statusIndicator.scraping {
-  background: var(--text-accent);
-  box-shadow: 0 0 10px var(--text-accent);
-  animation: pulse 1.5s infinite;
-}
-
-@keyframes pulse {
-  0% { opacity: 0.6; }
-  50% { opacity: 1; }
-  100% { opacity: 0.6; }
-}
-
-@media (max-width: 1024px) {
+@media (max-width: 1200px) {
   .dashboard {
     grid-template-columns: 1fr;
     height: auto;
+    overflow-y: auto;
   }
   .sidebar {
     display: none;
+  }
+  .main {
+      padding: 30px 20px;
+  }
+  .header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 20px;
   }
 }

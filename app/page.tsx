@@ -1,27 +1,48 @@
-import { Activity, CheckCircle2, Database, DownloadCloud, FolderSync, Clock, Settings, LayoutDashboard } from "lucide-react";
+import { Activity, CheckCircle2, Database, DownloadCloud, FolderSync, Clock, Settings, LayoutDashboard, Filter } from "lucide-react";
 import styles from "./page.module.css";
 import prisma from "./lib/prisma";
 import AutoRefresh from "./components/AutoRefresh";
+import DateFilter from "./components/DateFilter";
+import { Suspense } from "react";
 
 export const revalidate = 0;
 
+// Helper to format date if needed
+function formatDatePickerToDB(date: string) {
+  if (!date) return null;
+  const [year, month, day] = date.split('-');
+  // The user gave 20/3/2026. This might be D/M/YYYY or DD/MM/YYYY.
+  // We'll try to match both or just one if we can.
+  // For now, let's assume it's DD/MM/YYYY or D/M/YYYY.
+  // Prisma doesn't have a regex easily, so we might need to match the specific string.
+  return `${parseInt(day)}/${parseInt(month)}/${year}`;
+}
+
 // Server Action to fetch data
-async function getCities() {
+async function getCities(filterDate?: string) {
   try {
     if (!prisma) {
        console.log("Database not yet linked.");
        return [];
     }
-    const cities = await prisma.cityProgress.findMany();
+    
+    const dbDate = filterDate ? formatDatePickerToDB(filterDate) : null;
+    
+    const cities = await (prisma as any).cityProgress.findMany({
+      where: dbDate ? {
+        date: dbDate
+      } : {}
+    });
     return cities;
   } catch (err: any) {
-    console.log("Database connection failed, using empty list.");
+    console.log("Database connection failed, using empty list:", err.message);
     return [];
   }
 }
 
-export default async function Dashboard() {
-  const cities = await getCities();
+export default async function Dashboard({ searchParams }: { searchParams: Promise<{ date?: string }> }) {
+  const params = await searchParams;
+  const cities = await getCities(params.date);
   
   const totalCities = cities.length;
   const completedCities = cities.filter((c: any) => c.status?.toLowerCase() === "complete" || c.status?.toLowerCase() === "completed").length;
@@ -43,28 +64,29 @@ export default async function Dashboard() {
       {/* Sidebar Navigation */}
       <aside className={`${styles.sidebar} glass-panel`}>
         <div className={styles.brand}>
-          <Database className={styles.brandIcon} size={28} />
-          <span>Data Extraction</span>
+          <div className={styles.brandIconWrapper}>
+            <Database className={styles.brandIcon} size={24} />
+          </div>
+          <span>Puppies Dashboard</span>
         </div>
         
         <nav className={styles.nav}>
           <div className={`${styles.navLink} ${styles.active}`}>
             <LayoutDashboard size={20} />
-            Dashboard
-          </div>
-          {/* <div className={styles.navLink}>
-            <FolderSync size={20} />
-            Downloaded Files
+            Overview
           </div>
           <div className={styles.navLink}>
-            <Activity size={20} />
-            Logs
+             <Activity size={20} />
+             Reports
           </div>
-          <div className={styles.navLink}>
-            <Settings size={20} />
-            Settings
-          </div> */}
         </nav>
+
+        <div className={styles.sidebarFooter}>
+            <div className={styles.statusBadge}>
+                <div className={styles.statusPulse}></div>
+                System Online
+            </div>
+        </div>
       </aside>
 
       {/* Main Content Area */}
@@ -72,9 +94,17 @@ export default async function Dashboard() {
         
         {/* Header section */}
         <header className={`${styles.header} animate-fade-in`}>
-          <div>
-            <h1 className={styles.title}>Dashboard</h1>
-            <p className={styles.subtitle}>Monitor city data extraction status and Neon DB sync</p>
+          <div className={styles.headerTitleArea}>
+            <h1 className={styles.title}>Cities Status</h1>
+            <p className={styles.subtitle}>
+                {params.date ? `Showing data for ${params.date}` : "Live data overview across all dates"}
+            </p>
+          </div>
+          
+          <div className={styles.headerActions}>
+            <Suspense fallback={<div className={styles.filterLoading}>Loading...</div>}>
+              <DateFilter />
+            </Suspense>
           </div>
         </header>
 
@@ -83,70 +113,76 @@ export default async function Dashboard() {
           
           <div className={`${styles.statCard} glass-panel animate-fade-in`} style={{animationDelay: '0.1s'}}>
             <div className={styles.statHeader}>
-              <span className={styles.statTitle}>Completed Cities</span>
+              <span className={styles.statTitle}>Success Rate</span>
               <div className={styles.statIcon} style={{color: 'var(--success-color)'}}>
                 <CheckCircle2 size={24} />
               </div>
             </div>
-            <div className={styles.statValue}>{completedCities} / {totalCities}</div>
+            <div className={styles.statValue}>
+                {totalCities > 0 ? Math.round((completedCities/totalCities)*100) : 0}%
+            </div>
+            <div className={styles.statSub}>{completedCities} / {totalCities} Cities Done</div>
           </div>
 
           <div className={`${styles.statCard} glass-panel animate-fade-in`} style={{animationDelay: '0.2s'}}>
             <div className={styles.statHeader}>
-              <span className={styles.statTitle}>Scraping In Progress</span>
+              <span className={styles.statTitle}>In Progress</span>
               <div className={styles.statIcon} style={{color: 'var(--text-accent)'}}>
                 <Activity size={24} />
               </div>
             </div>
             <div className={styles.statValue}>{inProgressCities}</div>
+            <div className={styles.statSub}>Currently Extracting</div>
           </div>
 
           <div className={`${styles.statCard} glass-panel animate-fade-in`} style={{animationDelay: '0.3s'}}>
             <div className={styles.statHeader}>
-              <span className={styles.statTitle}>Total Files (Today)</span>
+              <span className={styles.statTitle}>Files Tracked</span>
               <div className={styles.statIcon} style={{color: 'var(--primary-color)'}}>
                 <DownloadCloud size={24} />
               </div>
             </div>
-            <div className={styles.statValue}>{totalFiles}</div>
+            <div className={styles.statValue}>{totalFiles.toLocaleString()}</div>
+            <div className={styles.statSub}>Total Pages Saved</div>
           </div>
 
         </section>
 
         {/* Data Table */}
         <section className={`${styles.tableSection} animate-fade-in`} style={{animationDelay: '0.4s'}}>
-          <h2 className={styles.sectionTitle}>
-            <Database size={24} />
-            Live Cities Status
-          </h2>
+          <div className={styles.tableHeader}>
+            <h2 className={styles.sectionTitle}>
+              <Database size={20} />
+              Detailed Status Report
+            </h2>
+          </div>
           
           <div className={`${styles.tableContainer} glass-panel`}>
             <table className={styles.table}>
               <thead>
                 <tr>
-                  <th>City</th>
-                  <th>Status</th>
-                  <th>Progress</th>
-                  <th>Downloaded Files</th>
-                  {/* <th>Last Updated</th> */}
+                  <th>City Name</th>
+                  <th>Process Status</th>
+                  <th>Visual Progress</th>
+                  <th>Files Count</th>
+                  <th>Reference Date</th>
                 </tr>
               </thead>
               <tbody>
                 {cities.length === 0 && (
                    <tr>
-                     <td colSpan={5} style={{textAlign: 'center', padding: '40px', color: 'var(--text-secondary)'}}>
-                        No cities found in Database. Please check your .env 
+                     <td colSpan={5} style={{textAlign: 'center', padding: '60px', color: 'var(--text-secondary)'}}>
+                        <div className={styles.emptyState}>
+                            <Filter size={48} style={{opacity: 0.2, marginBottom: '16px'}} />
+                            <p>No records found for the selected criteria.</p>
+                        </div>
                      </td>
                    </tr>
                 )}
                 {sortedCities.map((city: any) => (
-                  <tr key={city.id}>
+                   <tr key={city.id}>
                     <td>
                       <div className={styles.cityName}>
-                        <span className={`${styles.statusIndicator} ${
-                          (city.status?.toLowerCase() === 'complete' || city.status?.toLowerCase() === 'completed') ? styles.completed :
-                          city.status?.toLowerCase() === 'working' ? styles.scraping : styles.pending
-                        }`}></span>
                         {city.city}
                       </div>
                     </td>
@@ -155,8 +191,9 @@ export default async function Dashboard() {
                          (city.status?.toLowerCase() === 'complete' || city.status?.toLowerCase() === 'completed') ? 'completed' :
                          city.status?.toLowerCase() === 'working' ? 'scraping' : 'pending'
                       }`}>
-                        {(city.status?.toLowerCase() === 'complete' || city.status?.toLowerCase() === 'completed') ? 'Completed' : 
-                         city.status?.toLowerCase() === 'working' ? 'Working' : 'Pending'}
+                        <span className={styles.badgeIndicator}></span>
+                        {(city.status?.toLowerCase() === 'complete' || city.status?.toLowerCase() === 'completed') ? 'Finished' : 
+                         city.status?.toLowerCase() === 'working' ? 'Running' : city.status || 'Pending'}
                       </span>
                     </td>
                     <td>
@@ -164,23 +201,23 @@ export default async function Dashboard() {
                         <div className={styles.progressBar}>
                           <div 
                             className={`${styles.progressFill} ${(city.status?.toLowerCase() === 'complete' || city.status?.toLowerCase() === 'completed') ? styles.completed : ''}`}
-                            style={{width: `${(city.status?.toLowerCase() === 'complete' || city.status?.toLowerCase() === 'completed') ? 100 : 0}%`}}
+                            style={{width: `${(city.status?.toLowerCase() === 'complete' || city.status?.toLowerCase() === 'completed') ? 100 : 5}%`}}
                           ></div>
                         </div>
-                        <span style={{fontSize: '0.85rem', color: 'var(--text-secondary)'}}>
-                          {(city.status?.toLowerCase() === 'complete' || city.status?.toLowerCase() === 'completed') ? '100%' : '0%'}
+                        <span style={{fontSize: '0.8rem', color: 'var(--text-secondary)', width: '35px'}}>
+                          {(city.status?.toLowerCase() === 'complete' || city.status?.toLowerCase() === 'completed') ? '100%' : '5%'}
                         </span>
                       </div>
                     </td>
                     <td>
-                      <span style={{fontFamily: 'monospace', fontSize: '1.1rem'}}>{city.pages || 0}</span>
-                    </td>
-                    {/* <td>
-                      <div style={{display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-secondary)'}}>
-                        <Clock size={14} />
-                        Connected
+                      <div className={styles.fileCount}>
+                        <FolderSync size={14} style={{opacity: 0.5}} />
+                        <span>{city.pages || 0}</span>
                       </div>
-                    </td> */}
+                    </td>
+                    <td>
+                       <span className={styles.dateLabel}>{city.date || 'N/A'}</span>
+                    </td>
                   </tr>
                 ))}
               </tbody>

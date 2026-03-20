@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Extraction Dashboard | Dashboard",
-  description: "Monitor city data extraction status",
+  title: "Puppies Dashboard | Cities Data Extraction",
+  description: "Monitor cities data extraction status",
 };
 
 export default function RootLayout({

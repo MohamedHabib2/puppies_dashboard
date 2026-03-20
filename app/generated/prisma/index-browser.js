@@ -124,7 +124,8 @@ exports.Prisma.CityProgressScalarFieldEnum = {
   id: 'id',
   city: 'city',
   status: 'status',
-  pages: 'pages'
+  pages: 'pages',
+  date: 'date'
 };
 
 exports.Prisma.SortOrder = {

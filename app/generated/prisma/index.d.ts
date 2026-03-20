@@ -893,6 +893,7 @@ export namespace Prisma {
     city: string | null
     status: string | null
     pages: number | null
+    date: string | null
   }
 
   export type CityProgressMaxAggregateOutputType = {
@@ -900,6 +901,7 @@ export namespace Prisma {
     city: string | null
     status: string | null
     pages: number | null
+    date: string | null
   }
 
   export type CityProgressCountAggregateOutputType = {
@@ -907,6 +909,7 @@ export namespace Prisma {
     city: number
     status: number
     pages: number
+    date: number
     _all: number
   }
 
@@ -926,6 +929,7 @@ export namespace Prisma {
     city?: true
     status?: true
     pages?: true
+    date?: true
   }
 
   export type CityProgressMaxAggregateInputType = {
@@ -933,6 +937,7 @@ export namespace Prisma {
     city?: true
     status?: true
     pages?: true
+    date?: true
   }
 
   export type CityProgressCountAggregateInputType = {
@@ -940,6 +945,7 @@ export namespace Prisma {
     city?: true
     status?: true
     pages?: true
+    date?: true
     _all?: true
   }
 
@@ -1034,6 +1040,7 @@ export namespace Prisma {
     city: string
     status: string | null
     pages: number | null
+    date: string | null
     _count: CityProgressCountAggregateOutputType | null
     _avg: CityProgressAvgAggregateOutputType | null
     _sum: CityProgressSumAggregateOutputType | null
@@ -1060,6 +1067,7 @@ export namespace Prisma {
     city?: boolean
     status?: boolean
     pages?: boolean
+    date?: boolean
   }, ExtArgs["result"]["cityProgress"]>
 
   export type CityProgressSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -1067,6 +1075,7 @@ export namespace Prisma {
     city?: boolean
     status?: boolean
     pages?: boolean
+    date?: boolean
   }, ExtArgs["result"]["cityProgress"]>
 
   export type CityProgressSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -1074,6 +1083,7 @@ export namespace Prisma {
     city?: boolean
     status?: boolean
     pages?: boolean
+    date?: boolean
   }, ExtArgs["result"]["cityProgress"]>
 
   export type CityProgressSelectScalar = {
@@ -1081,9 +1091,10 @@ export namespace Prisma {
     city?: boolean
     status?: boolean
     pages?: boolean
+    date?: boolean
   }
 
-  export type CityProgressOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "city" | "status" | "pages", ExtArgs["result"]["cityProgress"]>
+  export type CityProgressOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "city" | "status" | "pages" | "date", ExtArgs["result"]["cityProgress"]>
 
   export type $CityProgressPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "CityProgress"
@@ -1093,6 +1104,7 @@ export namespace Prisma {
       city: string
       status: string | null
       pages: number | null
+      date: string | null
     }, ExtArgs["result"]["cityProgress"]>
     composites: {}
   }
@@ -1520,6 +1532,7 @@ export namespace Prisma {
     readonly city: FieldRef<"CityProgress", 'String'>
     readonly status: FieldRef<"CityProgress", 'String'>
     readonly pages: FieldRef<"CityProgress", 'Int'>
+    readonly date: FieldRef<"CityProgress", 'String'>
   }
     
 
@@ -1909,7 +1922,8 @@ export namespace Prisma {
     id: 'id',
     city: 'city',
     status: 'status',
-    pages: 'pages'
+    pages: 'pages',
+    date: 'date'
   };
 
   export type CityProgressScalarFieldEnum = (typeof CityProgressScalarFieldEnum)[keyof typeof CityProgressScalarFieldEnum]
@@ -1997,6 +2011,7 @@ export namespace Prisma {
     city?: StringFilter<"CityProgress"> | string
     status?: StringNullableFilter<"CityProgress"> | string | null
     pages?: IntNullableFilter<"CityProgress"> | number | null
+    date?: StringNullableFilter<"CityProgress"> | string | null
   }
 
   export type CityProgressOrderByWithRelationInput = {
@@ -2004,6 +2019,7 @@ export namespace Prisma {
     city?: SortOrder
     status?: SortOrderInput | SortOrder
     pages?: SortOrderInput | SortOrder
+    date?: SortOrderInput | SortOrder
   }
 
   export type CityProgressWhereUniqueInput = Prisma.AtLeast<{
@@ -2014,6 +2030,7 @@ export namespace Prisma {
     NOT?: CityProgressWhereInput | CityProgressWhereInput[]
     status?: StringNullableFilter<"CityProgress"> | string | null
     pages?: IntNullableFilter<"CityProgress"> | number | null
+    date?: StringNullableFilter<"CityProgress"> | string | null
   }, "id" | "city">
 
   export type CityProgressOrderByWithAggregationInput = {
@@ -2021,6 +2038,7 @@ export namespace Prisma {
     city?: SortOrder
     status?: SortOrderInput | SortOrder
     pages?: SortOrderInput | SortOrder
+    date?: SortOrderInput | SortOrder
     _count?: CityProgressCountOrderByAggregateInput
     _avg?: CityProgressAvgOrderByAggregateInput
     _max?: CityProgressMaxOrderByAggregateInput
@@ -2036,12 +2054,14 @@ export namespace Prisma {
     city?: StringWithAggregatesFilter<"CityProgress"> | string
     status?: StringNullableWithAggregatesFilter<"CityProgress"> | string | null
     pages?: IntNullableWithAggregatesFilter<"CityProgress"> | number | null
+    date?: StringNullableWithAggregatesFilter<"CityProgress"> | string | null
   }
 
   export type CityProgressCreateInput = {
     city: string
     status?: string | null
     pages?: number | null
+    date?: string | null
   }
 
   export type CityProgressUncheckedCreateInput = {
@@ -2049,12 +2069,14 @@ export namespace Prisma {
     city: string
     status?: string | null
     pages?: number | null
+    date?: string | null
   }
 
   export type CityProgressUpdateInput = {
     city?: StringFieldUpdateOperationsInput | string
     status?: NullableStringFieldUpdateOperationsInput | string | null
     pages?: NullableIntFieldUpdateOperationsInput | number | null
+    date?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type CityProgressUncheckedUpdateInput = {
@@ -2062,6 +2084,7 @@ export namespace Prisma {
     city?: StringFieldUpdateOperationsInput | string
     status?: NullableStringFieldUpdateOperationsInput | string | null
     pages?: NullableIntFieldUpdateOperationsInput | number | null
+    date?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type CityProgressCreateManyInput = {
@@ -2069,12 +2092,14 @@ export namespace Prisma {
     city: string
     status?: string | null
     pages?: number | null
+    date?: string | null
   }
 
   export type CityProgressUpdateManyMutationInput = {
     city?: StringFieldUpdateOperationsInput | string
     status?: NullableStringFieldUpdateOperationsInput | string | null
     pages?: NullableIntFieldUpdateOperationsInput | number | null
+    date?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type CityProgressUncheckedUpdateManyInput = {
@@ -2082,6 +2107,7 @@ export namespace Prisma {
     city?: StringFieldUpdateOperationsInput | string
     status?: NullableStringFieldUpdateOperationsInput | string | null
     pages?: NullableIntFieldUpdateOperationsInput | number | null
+    date?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type IntFilter<$PrismaModel = never> = {
@@ -2146,6 +2172,7 @@ export namespace Prisma {
     city?: SortOrder
     status?: SortOrder
     pages?: SortOrder
+    date?: SortOrder
   }
 
   export type CityProgressAvgOrderByAggregateInput = {
@@ -2158,6 +2185,7 @@ export namespace Prisma {
     city?: SortOrder
     status?: SortOrder
     pages?: SortOrder
+    date?: SortOrder
   }
 
   export type CityProgressMinOrderByAggregateInput = {
@@ -2165,6 +2193,7 @@ export namespace Prisma {
     city?: SortOrder
     status?: SortOrder
     pages?: SortOrder
+    date?: SortOrder
   }
 
   export type CityProgressSumOrderByAggregateInput = {

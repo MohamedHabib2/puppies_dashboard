@@ -12,6 +12,7 @@ model CityProgress {
   city   String  @unique
   status String? @default("working")
   pages  Int?
+  date   String?
 
   @@map("cities_table")
 }
