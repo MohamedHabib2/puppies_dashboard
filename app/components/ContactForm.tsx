@@ -24,7 +24,7 @@ export default function ContactForm() {
       setSuccess(true);
       (event.target as HTMLFormElement).reset();
     } else {
-      setError(result.error || "حدث خطأ ما");
+      setError(result.error || "Something went wrong");
     }
   }
 
@@ -46,8 +46,8 @@ export default function ContactForm() {
         }}>
           <CheckCircle2 size={48} color="var(--success-color)" />
           <div>
-            <h3 style={{ color: "var(--success-color)", marginBottom: "0.5rem" }}> Sent Successfully </h3>
-            <p style={{ color: "var(--text-secondary)" }}> Thnk you</p>
+            <h3 style={{ color: "var(--success-color)", marginBottom: "0.5rem" }}>Message Sent!</h3>
+            <p style={{ color: "var(--text-secondary)" }}>Thank you for your feedback.</p>
           </div>
           <button 
             onClick={() => setSuccess(false)}

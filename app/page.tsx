@@ -1,4 +1,4 @@
-import { Activity, CheckCircle2, Database, DownloadCloud, FolderSync, Clock, Settings, LayoutDashboard, Filter, ChevronLeft, ChevronRight } from "lucide-react";
+import { Activity, CheckCircle2, Database, DownloadCloud, FolderSync, Filter, ChevronLeft, ChevronRight } from "lucide-react";
 import styles from "./page.module.css";
 import Link from "next/link";
 import prisma from "./lib/prisma";
@@ -11,8 +11,16 @@ export const revalidate = 0;
 // Helper to format date if needed
 function formatDatePickerToDB(date: string) {
   if (!date) return null;
-  // Database stores date as YYYY-MM-DD (string), so we return it directly
+// Database stores date as YYYY-MM-DD (string), so we return it directly
   return date;
+}
+
+interface City {
+  id: number;
+  city: string;
+  status: string | null;
+  pages: number | null;
+  date: string | null;
 }
 
 // Server Action to fetch data
@@ -25,14 +33,15 @@ async function getCities(filterDate?: string) {
     
     const dbDate = filterDate ? formatDatePickerToDB(filterDate) : null;
     
-    const cities = await (prisma as any).cityProgress.findMany({
+    const cities = await prisma.cityProgress.findMany({
       where: dbDate ? {
         date: dbDate
       } : {}
-    });
+    }) as City[];
     return cities;
-  } catch (err: any) {
-    console.log("Database connection failed, using empty list:", err.message);
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : String(err);
+    console.log("Database connection failed, using empty list:", message);
     return [];
   }
 }
@@ -44,12 +53,12 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
   const itemsPerPage = 9;
   
   const totalCities = cities.length;
-  const completedCities = cities.filter((c: any) => c.status?.toLowerCase() === "complete" || c.status?.toLowerCase() === "completed").length;
-  const inProgressCities = cities.filter((c: any) => c.status?.toLowerCase() === "working").length;
-  const totalFiles = cities.reduce((acc: number, c: any) => acc + (c.pages || 0), 0);
+  const completedCities = cities.filter((c: City) => c.status?.toLowerCase() === "complete" || c.status?.toLowerCase() === "completed").length;
+  const inProgressCities = cities.filter((c: City) => c.status?.toLowerCase() === "working").length;
+  const totalFiles = cities.reduce((acc: number, c: City) => acc + (c.pages || 0), 0);
 
   // Sorting: Finished cities at the bottom
-  const sortedCities = [...cities].sort((a: any, b: any) => {
+  const sortedCities = [...cities].sort((a: City, b: City) => {
     const isDoneA = a.status?.toLowerCase() === "complete" || a.status?.toLowerCase() === "completed";
     const isDoneB = b.status?.toLowerCase() === "complete" || b.status?.toLowerCase() === "completed";
     
@@ -166,7 +175,7 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
                      </td>
                    </tr>
                 )}
-                {paginatedCities.map((city: any) => (
+                {paginatedCities.map((city: City) => (
                    <tr key={city.id}>
                     <td>
                       <div className={styles.cityName}>

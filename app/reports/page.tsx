@@ -5,6 +5,14 @@ import { Suspense } from "react";
 
 export const revalidate = 0;
 
+interface CityRecord {
+  id: number;
+  city: string;
+  status: string | null;
+  pages: number | null;
+  date: string;
+}
+
 async function getAggregatedData() {
   try {
     if (!prisma ) {
@@ -12,12 +20,12 @@ async function getAggregatedData() {
         return { daily: [], weekly: [], monthly: [] };
     }
 
-    const allRecords = await (prisma as any).cityProgress.findMany({
+    const allRecords = await prisma.cityProgress.findMany({
       where: {
         date: { not: null }
       },
       orderBy: { date: 'asc' }
-    });
+    }) as CityRecord[];
 
     if (!allRecords || allRecords.length === 0) {
       return { daily: [], weekly: [], monthly: [] };
@@ -25,8 +33,8 @@ async function getAggregatedData() {
 
     // Daily Aggregation
     const dailyMap = new Map<string, number>();
-    allRecords.forEach((record: any) => {
-      const date = record.date as string;
+    allRecords.forEach((record: CityRecord) => {
+      const date = record.date;
       dailyMap.set(date, (dailyMap.get(date) || 0) + (record.pages || 0));
     });
 
@@ -36,7 +44,7 @@ async function getAggregatedData() {
 
     // Weekly Aggregation
     const weeklyMap = new Map<string, number>();
-    allRecords.forEach((record: any) => {
+    allRecords.forEach((record: CityRecord) => {
       try {
         const d = new Date(record.date);
         if (isNaN(d.getTime())) return;
@@ -47,7 +55,7 @@ async function getAggregatedData() {
         const monday = new Date(new Date(d).setDate(diff)).toISOString().split('T')[0];
         const key = `Wk ${monday.substring(5)}`; // Simplified label Wk MM-DD
         weeklyMap.set(key, (weeklyMap.get(key) || 0) + (record.pages || 0));
-      } catch (e) {
+      } catch {
         // Skip invalid dates
       }
     });
@@ -55,15 +63,16 @@ async function getAggregatedData() {
 
     // Monthly Aggregation
     const monthlyMap = new Map<string, number>();
-    allRecords.forEach((record: any) => {
-      const month = (record.date as string).substring(0, 7); // YYYY-MM
+    allRecords.forEach((record: CityRecord) => {
+      const month = record.date.substring(0, 7); // YYYY-MM
       monthlyMap.set(month, (monthlyMap.get(month) || 0) + (record.pages || 0));
     });
     const monthly = Array.from(monthlyMap.entries()).map(([name, pages]) => ({ name, pages }));
 
     return { daily, weekly, monthly };
-  } catch (err: any) {
-    console.warn("Failed to fetch report data:", err.message);
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : String(err);
+    console.warn("Failed to fetch report data:", message);
     return { daily: [], weekly: [], monthly: [] };
   }
 }

@@ -6,16 +6,21 @@ export async function sendContactMessage(formData: FormData) {
   const message = formData.get("message") as string;
 
   if (!message) {
-    return { success: false, error: "الرسالة مطلوبة" };
+    return { success: false, error: "Message is required" };
   }
 
   try {
     // 1. Save to Neon DB
-    await prisma.contactMessage.create({
-      data: {
-        message: message,
-      },
-    });
+    if (!prisma) {
+      console.error("❌ Prisma client not initialized!");
+      // Optionally fallback or continue to Discord but we prefer saving first
+    } else {
+      await prisma.contactMessage.create({
+        data: {
+          message: message,
+        },
+      });
+    }
 
     // 2. Send to Discord
     const discordWebhookUrl = process.env.DISCORD_WEBHOOK_URL;
@@ -26,7 +31,7 @@ export async function sendContactMessage(formData: FormData) {
       // the user MUST add the variable in the dashboard.
       return { 
         success: false, 
-        error: "خطأ في الإعدادات: رابط Webhook غير موجود في السيرفر" 
+        error: "Configuration error: Webhook URL missing" 
       };
     }
 
@@ -43,7 +48,7 @@ export async function sendContactMessage(formData: FormData) {
     if (!response.ok) {
       const errorText = await response.text();
       console.error("Discord response error:", errorText);
-      throw new Error(`مشكلة في إرسال الرسالة إلى ديسكورد (Status: ${response.status})`);
+      throw new Error(`Failed to send message to Discord (Status: ${response.status})`);
     }
 
     return { success: true };
@@ -51,7 +56,7 @@ export async function sendContactMessage(formData: FormData) {
     console.error("Error sending contact message:", error);
     return { 
       success: false, 
-      error: error instanceof Error ? error.message : "حدث خطأ غير متوقع" 
+      error: error instanceof Error ? error.message : "An unexpected error occurred" 
     };
   }
 }

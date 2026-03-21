@@ -7,10 +7,15 @@ import {
 } from 'recharts';
 import styles from './reports.module.css';
 
+interface ChartData {
+  name: string;
+  pages: number;
+}
+
 interface ChartsContainerProps {
-  dailyData: any[];
-  weeklyData: any[];
-  monthlyData: any[];
+  dailyData: ChartData[];
+  weeklyData: ChartData[];
+  monthlyData: ChartData[];
 }
 
 export default function ChartsContainer({ dailyData, weeklyData, monthlyData }: ChartsContainerProps) {

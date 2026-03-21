@@ -1,6 +1,4 @@
-import { PrismaClient } from './app/generated/prisma';
 import { Pool } from 'pg';
-import { PrismaPg } from '@prisma/adapter-pg';
 
 async function checkTables() {
   const url = process.env.DATABASE_URL;
