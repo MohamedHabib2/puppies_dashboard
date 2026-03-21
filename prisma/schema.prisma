@@ -16,7 +16,7 @@ model CityProgress {
   date   String?
 
   @@unique([city, date])
- 
+  @@map("cities_table")
 }
 
 model ContactMessage {
