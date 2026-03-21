@@ -21,23 +21,29 @@ export async function sendContactMessage(formData: FormData) {
     const discordWebhookUrl = process.env.DISCORD_WEBHOOK_URL;
     
     if (!discordWebhookUrl) {
-      console.warn("⚠️ DISCORD_WEBHOOK_URL is not defined in environment variables.");
-      // Even if discord is missing, we consider it partial success since it's in DB
-      // but let's notify the logs.
-    } else {
-      const response = await fetch(discordWebhookUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          content: `🚀 **New Message from Contact Form**:\n${message}`,
-        }),
-      });
+      console.error("❌ DISCORD_WEBHOOK_URL is missing in environment variables!");
+      // This is for debugging in Production. If this error appears on screen, it means 
+      // the user MUST add the variable in the dashboard.
+      return { 
+        success: false, 
+        error: "خطأ في الإعدادات: رابط Webhook غير موجود في السيرفر" 
+      };
+    }
 
-      if (!response.ok) {
-        throw new Error(`Discord API responded with status ${response.status}`);
-      }
+    const response = await fetch(discordWebhookUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        content: `🚀 **New Message from Contact Form**:\n\n**Message:**\n${message}`,
+      }),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("Discord response error:", errorText);
+      throw new Error(`مشكلة في إرسال الرسالة إلى ديسكورد (Status: ${response.status})`);
     }
 
     return { success: true };
@@ -45,7 +51,7 @@ export async function sendContactMessage(formData: FormData) {
     console.error("Error sending contact message:", error);
     return { 
       success: false, 
-      error: error instanceof Error ? error.message : "حدث خطأ أثناء إرسال الرسالة" 
+      error: error instanceof Error ? error.message : "حدث خطأ غير متوقع" 
     };
   }
 }
