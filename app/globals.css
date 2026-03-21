@@ -127,3 +127,26 @@ button {
   border: 1px solid rgba(56, 189, 248, 0.2);
 }
 
+
+/* Layout Structures */
+.dashboard-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--bg-color);
+}
+
+.main-content {
+  overflow-y: auto;
+  height: 100vh;
+  background: var(--bg-gradient);
+}
+
+@media (max-width: 1200px) {
+  .dashboard-layout {
+    grid-template-columns: 1fr;
+    height: auto;
+    overflow-y: auto;
+  }
+}

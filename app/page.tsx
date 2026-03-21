@@ -1,5 +1,6 @@
-import { Activity, CheckCircle2, Database, DownloadCloud, FolderSync, Clock, Settings, LayoutDashboard, Filter } from "lucide-react";
+import { Activity, CheckCircle2, Database, DownloadCloud, FolderSync, Clock, Settings, LayoutDashboard, Filter, ChevronLeft, ChevronRight } from "lucide-react";
 import styles from "./page.module.css";
+import Link from "next/link";
 import prisma from "./lib/prisma";
 import AutoRefresh from "./components/AutoRefresh";
 import DateFilter from "./components/DateFilter";
@@ -36,57 +37,47 @@ async function getCities(filterDate?: string) {
   }
 }
 
-export default async function Dashboard({ searchParams }: { searchParams: Promise<{ date?: string }> }) {
+export default async function Dashboard({ searchParams }: { searchParams: Promise<{ date?: string, page?: string }> }) {
   const params = await searchParams;
   const cities = await getCities(params.date);
+  const currentPage = parseInt(params.page || '1');
+  const itemsPerPage = 9;
   
   const totalCities = cities.length;
   const completedCities = cities.filter((c: any) => c.status?.toLowerCase() === "complete" || c.status?.toLowerCase() === "completed").length;
   const inProgressCities = cities.filter((c: any) => c.status?.toLowerCase() === "working").length;
   const totalFiles = cities.reduce((acc: number, c: any) => acc + (c.pages || 0), 0);
 
-  // Sorting: Completed cities first
+  // Sorting: Finished cities at the bottom
   const sortedCities = [...cities].sort((a: any, b: any) => {
     const isDoneA = a.status?.toLowerCase() === "complete" || a.status?.toLowerCase() === "completed";
     const isDoneB = b.status?.toLowerCase() === "complete" || b.status?.toLowerCase() === "completed";
-    if (isDoneA && !isDoneB) return -1;
-    if (!isDoneA && isDoneB) return 1;
+    
+    // If one is done and the other isn't, put the non-done one first
+    if (!isDoneA && isDoneB) return -1;
+    if (isDoneA && !isDoneB) return 1;
+    
+    // Otherwise keep current order (can be id or name if desired)
     return 0;
   });
 
+  // Pagination slicing
+  const totalPages = Math.ceil(totalCities / itemsPerPage);
+  const startIdx = (currentPage - 1) * itemsPerPage;
+  const paginatedCities = sortedCities.slice(startIdx, startIdx + itemsPerPage);
+  
+  // Helper to generate pagination URL
+  const getPageUrl = (page: number) => {
+    const query = new URLSearchParams();
+    if (params.date) query.set('date', params.date);
+    query.set('page', page.toString());
+    return `/?${query.toString()}`;
+  };
+
   return (
-    <div className={styles.dashboard}>
+    <>
       <AutoRefresh interval={15000} />
-      {/* Sidebar Navigation */}
-      <aside className={`${styles.sidebar} glass-panel`}>
-        <div className={styles.brand}>
-          <div className={styles.brandIconWrapper}>
-            <Database className={styles.brandIcon} size={24} />
-          </div>
-          <span>Puppies Dashboard</span>
-        </div>
-        
-        <nav className={styles.nav}>
-          <div className={`${styles.navLink} ${styles.active}`}>
-            <LayoutDashboard size={20} />
-            Overview
-          </div>
-          <div className={styles.navLink}>
-             <Activity size={20} />
-             Reports
-          </div>
-        </nav>
-
-        <div className={styles.sidebarFooter}>
-            <div className={styles.statusBadge}>
-                <div className={styles.statusPulse}></div>
-                System Online
-            </div>
-        </div>
-      </aside>
-
-      {/* Main Content Area */}
-      <main className={styles.main}>
+      <div className={styles.main}>
         
         {/* Header section */}
         <header className={`${styles.header} animate-fade-in`}>
@@ -175,7 +166,7 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
                      </td>
                    </tr>
                 )}
-                {sortedCities.map((city: any) => (
+                {paginatedCities.map((city: any) => (
                    <tr key={city.id}>
                     <td>
                       <div className={styles.cityName}>
@@ -218,10 +209,34 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
                 ))}
               </tbody>
             </table>
+
+            {/* Pagination Controls */}
+            {totalCities > 0 && (
+                <div className={styles.pagination}>
+                    <div className={styles.paginationInfo}>
+                        Showing <span>{Math.min(startIdx + 1, totalCities)}</span> to <span>{Math.min(startIdx + itemsPerPage, totalCities)}</span> of <span>{totalCities}</span> cities
+                    </div>
+                    {totalPages > 1 && (
+                        <div className={styles.paginationControls}>
+                            <Link 
+                                href={getPageUrl(currentPage - 1)} 
+                                className={`${styles.pageLink} ${currentPage <= 1 ? styles.disabled : ''}`}
+                            >
+                                <ChevronLeft size={16} /> Previous
+                            </Link>
+                            <Link 
+                                href={getPageUrl(currentPage + 1)} 
+                                className={`${styles.pageLink} ${currentPage >= totalPages ? styles.disabled : ''}`}
+                            >
+                                Next <ChevronRight size={16} />
+                            </Link>
+                        </div>
+                    )}
+                </div>
+            )}
           </div>
         </section>
-
-      </main>
-    </div>
+      </div>
+    </>
   );
 }
