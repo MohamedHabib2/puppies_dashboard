@@ -11,7 +11,7 @@ const prismaClientSingleton = () => {
 
   try {
     const pool = new Pool({ connectionString: url })
-    const adapter = new PrismaPg(pool)
+    const adapter = new PrismaPg(pool as any) // eslint-disable-line @typescript-eslint/no-explicit-any
     return new PrismaClient({ adapter })
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : String(err);
