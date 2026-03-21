@@ -128,6 +128,12 @@ exports.Prisma.CityProgressScalarFieldEnum = {
   date: 'date'
 };
 
+exports.Prisma.ContactMessageScalarFieldEnum = {
+  id: 'id',
+  message: 'message',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -145,7 +151,8 @@ exports.Prisma.NullsOrder = {
 
 
 exports.Prisma.ModelName = {
-  CityProgress: 'CityProgress'
+  CityProgress: 'CityProgress',
+  ContactMessage: 'ContactMessage'
 };
 
 /**

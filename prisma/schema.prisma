@@ -7,6 +7,7 @@ datasource db {
   provider = "postgresql"
 }
 
+
 model CityProgress {
   id     Int     @id @default(autoincrement())
   city   String
@@ -17,3 +18,10 @@ model CityProgress {
   @@unique([city, date])
   @@map("cities_table")
 }
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  message   String
+  createdAt DateTime @default(now())
+}
+

@@ -1,6 +1,6 @@
 "use client";
 
-import { Activity, Database, LayoutDashboard } from "lucide-react";
+import { Activity, Database, LayoutDashboard, MessageSquare } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import styles from "./Sidebar.module.css";
@@ -32,7 +32,15 @@ export default function Sidebar() {
           <Activity size={20} />
           Reports
         </Link>
+        <Link 
+          href="/contact" 
+          className={`${styles.navLink} ${pathname === "/contact" ? styles.active : ""}`}
+        >
+          <MessageSquare size={20} />
+          Contact Us
+        </Link>
       </nav>
+
 
       <div className={styles.sidebarFooter}>
           <div className={styles.statusBadge}>
