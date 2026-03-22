@@ -58,6 +58,16 @@ export default function Sidebar() {
             <X size={24} />
           </button>
         </div>
+
+        {/* Brand visible on desktop */}
+        <div className={styles.desktopBrand}>
+          <div className={styles.brand}>
+            <div className={styles.brandIconWrapper}>
+              <Database className={styles.brandIcon} size={24} />
+            </div>
+            <span>Puppies Dashboard</span>
+          </div>
+        </div>
         
         <nav className={styles.nav}>
           <Link 

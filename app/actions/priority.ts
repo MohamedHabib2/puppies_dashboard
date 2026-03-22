@@ -46,6 +46,7 @@ export async function fetchCitiesAction() {
     try {
         if (!prisma) return [];
         return await prisma.cityProgress.findMany({
+            take: 49,
             orderBy: [{ priority: "asc" }, { id: "desc" }],
         });
     } catch (err) {
@@ -76,7 +77,8 @@ export async function saveCitiesOrderAction(orderedIds: string[]) {
                 where: {
                     id: { in: orderedIds.map(id => parseInt(id)).filter(id => !isNaN(id)) }
                 },
-                orderBy: { priority: "asc" }
+                orderBy: { priority: "asc" 
+                }
             });
         }, {
             maxWait: 15000,
