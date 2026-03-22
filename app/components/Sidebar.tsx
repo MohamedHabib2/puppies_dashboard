@@ -33,11 +33,11 @@ export default function Sidebar() {
           Reports
         </Link>
         <Link 
-          href="/contact" 
-          className={`${styles.navLink} ${pathname === "/contact" ? styles.active : ""}`}
+          href="/breeders" 
+          className={`${styles.navLink} ${pathname === "/breeders" ? styles.active : ""}`}
         >
-          <MessageSquare size={20} />
-          Contact Us
+          <Database size={20} />
+          Breeders Hub
         </Link>
         <Link 
           href="/priority" 
@@ -45,6 +45,13 @@ export default function Sidebar() {
         >
           <Zap size={20} />
           Request special scraping priority
+        </Link>
+        <Link 
+          href="/contact" 
+          className={`${styles.navLink} ${pathname === "/contact" ? styles.active : ""}`}
+        >
+          <MessageSquare size={20} />
+          Contact Us
         </Link>
       </nav>
 

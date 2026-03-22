@@ -135,6 +135,40 @@ exports.Prisma.ContactMessageScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.CitiesScalarFieldEnum = {
+  id: 'id',
+  name: 'name'
+};
+
+exports.Prisma.PuppiesScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  price: 'price',
+  age: 'age',
+  breed: 'breed',
+  listing_url: 'listing_url',
+  seller_id: 'seller_id',
+  scraped_at: 'scraped_at',
+  processed_at: 'processed_at',
+  source_date: 'source_date',
+  folder_date: 'folder_date',
+  folder_creation_date: 'folder_creation_date'
+};
+
+exports.Prisma.SellersScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  phone: 'phone',
+  location: 'location',
+  city_id: 'city_id',
+  created_at: 'created_at',
+  city: 'city',
+  puppies_count: 'puppies_count',
+  source_date: 'source_date',
+  folder_date: 'folder_date',
+  folder_creation_date: 'folder_creation_date'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -153,7 +187,10 @@ exports.Prisma.NullsOrder = {
 
 exports.Prisma.ModelName = {
   CityProgress: 'CityProgress',
-  ContactMessage: 'ContactMessage'
+  ContactMessage: 'ContactMessage',
+  cities: 'cities',
+  puppies: 'puppies',
+  sellers: 'sellers'
 };
 
 /**

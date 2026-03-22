@@ -8,12 +8,12 @@ datasource db {
 }
 
 model CityProgress {
-  id       Int     @id @default(autoincrement())
+  id       Int       @id @default(autoincrement())
   city     String
-  status   String? @default("working")
+  status   String?   @default("working")
   pages    Int?
-  date     String?
-  priority Int?    @default(0)
+  date     DateTime? @db.Date
+  priority Int?      @default(0)
 
   @@unique([city, date])
   @@map("cities_table")
@@ -23,4 +23,46 @@ model ContactMessage {
   id        String   @id @default(cuid())
   message   String
   createdAt DateTime @default(now())
+}
+
+model cities {
+  id      Int       @id @default(autoincrement())
+  name    String    @unique @db.VarChar(100)
+  sellers sellers[]
+}
+
+model puppies {
+  id                   Int       @id @default(autoincrement())
+  name                 String?
+  price                String?
+  age                  String?
+  breed                String?
+  listing_url          String?
+  seller_id            Int?
+  scraped_at           DateTime? @default(dbgenerated("CURRENT_DATE")) @db.Date
+  processed_at         DateTime? @default(now()) @db.Timestamp(6)
+  source_date          DateTime? @db.Timestamp(6)
+  folder_date          String?
+  folder_creation_date String?
+  sellers              sellers?  @relation(fields: [seller_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "puppies_seller_id_fkey")
+
+  @@unique([seller_id, listing_url], map: "puppies_unique_idx")
+}
+
+model sellers {
+  id                   Int       @id @default(autoincrement())
+  name                 String
+  phone                String?
+  location             String?
+  city_id              Int?
+  created_at           DateTime? @default(now()) @db.Timestamp(6)
+  city                 String?
+  puppies_count        Int?      @default(0) @map("puppies")
+  source_date          DateTime? @db.Timestamp(6)
+  folder_date          String?
+  folder_creation_date String?
+  puppy_listings       puppies[]
+  cities               cities?   @relation(fields: [city_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([name, phone, city], map: "sellers_unique_idx")
 }

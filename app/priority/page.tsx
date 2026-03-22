@@ -81,7 +81,7 @@ export default function PriorityPage() {
 
     const orderedIds = cities.filter(c => !c.id.startsWith('d')).map(c => c.id);
     
-    console.log("Saving new order:", cities.map((c, i) => `${i + 1}. ${c.name}`));
+    // console.log("Saving new order:", cities.map((c, i) => `${i + 1}. ${c.name}`));
 
     if (orderedIds.length === 0) {
       setErrorStatus("No real cities in the queue to save.");

@@ -10,7 +10,7 @@ interface CityRecord {
   city: string;
   status: string | null;
   pages: number | null;
-  date: string;
+  date: Date | string | null;
 }
 
 async function getAggregatedData() {
@@ -34,8 +34,10 @@ async function getAggregatedData() {
     // Daily Aggregation
     const dailyMap = new Map<string, number>();
     allRecords.forEach((record: CityRecord) => {
-      const date = record.date;
-      dailyMap.set(date, (dailyMap.get(date) || 0) + (record.pages || 0));
+      const dateRaw = record.date;
+      if (!dateRaw) return;
+      const dateStr = dateRaw instanceof Date ? dateRaw.toISOString().split('T')[0] : String(dateRaw);
+      dailyMap.set(dateStr, (dailyMap.get(dateStr) || 0) + (record.pages || 0));
     });
 
     const daily = Array.from(dailyMap.entries())
@@ -46,7 +48,8 @@ async function getAggregatedData() {
     const weeklyMap = new Map<string, number>();
     allRecords.forEach((record: CityRecord) => {
       try {
-        const d = new Date(record.date);
+        if (!record.date) return;
+        const d = new Date(record.date as any);
         if (isNaN(d.getTime())) return;
         
         // Get Monday of the week
@@ -61,10 +64,11 @@ async function getAggregatedData() {
     });
     const weekly = Array.from(weeklyMap.entries()).map(([name, pages]) => ({ name, pages }));
 
-    // Monthly Aggregation
     const monthlyMap = new Map<string, number>();
     allRecords.forEach((record: CityRecord) => {
-      const month = record.date.substring(0, 7); // YYYY-MM
+      if (!record.date) return;
+      const dateStr = record.date instanceof Date ? record.date.toISOString().split('T')[0] : String(record.date);
+      const month = dateStr.substring(0, 7); // YYYY-MM
       monthlyMap.set(month, (monthlyMap.get(month) || 0) + (record.pages || 0));
     });
     const monthly = Array.from(monthlyMap.entries()).map(([name, pages]) => ({ name, pages }));

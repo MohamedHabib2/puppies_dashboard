@@ -47,7 +47,6 @@ export async function fetchCitiesAction() {
         if (!prisma) return [];
         return await prisma.cityProgress.findMany({
             orderBy: [{ priority: "asc" }, { id: "desc" }],
-            take: 50
         });
     } catch (err) {
         console.error("Failed to fetch cities from DB:", err);
@@ -99,7 +98,7 @@ export async function saveCitiesOrderAction(orderedIds: string[]) {
                         'Authorization': `Bearer ${resendApiKey.trim()}`,
                     },
                     body: JSON.stringify({
-                        from: 'Onboarding <onboarding@resend.dev>',
+                        from: 'Puppies <onboarding@resend.dev>',
                         to: [targetEmail],
                         subject: 'New Priority Queue Order Submitted 🚀',
                         text: `The city scraping priority has been updated. New order:\n\n${citiesList}`,

@@ -11,8 +11,10 @@ export const revalidate = 0;
 // Helper to format date if needed
 function formatDatePickerToDB(date: string) {
   if (!date) return null;
-// Database stores date as YYYY-MM-DD (string), so we return it directly
-  return date;
+  // Convert YYYY-MM-DD string to a Date object for Prisma
+  const d = new Date(date);
+  if (isNaN(d.getTime())) return null;
+  return d;
 }
 
 interface City {
@@ -28,27 +30,42 @@ async function getCities(filterDate?: string) {
   try {
     if (!prisma) {
        console.log("Database not yet linked.");
-       return [];
+       return { cities: [], activeDate: null };
     }
     
-    const dbDate = filterDate ? formatDatePickerToDB(filterDate) : null;
+    let targetDate: Date | null = filterDate ? formatDatePickerToDB(filterDate) : null;
+    
+    // If no date provided, find the latest date in DB
+    if (!targetDate && !filterDate) {
+      const latestRecord = await prisma.cityProgress.findFirst({
+        where: { date: { not: null } },
+        orderBy: { date: 'desc' },
+        select: { date: true }
+      });
+      targetDate = latestRecord?.date || null;
+    }
     
     const cities = await prisma.cityProgress.findMany({
-      where: dbDate ? {
-        date: dbDate
+      where: targetDate ? {
+        date: targetDate
       } : {}
     }) as City[];
-    return cities;
+    
+    return { 
+      cities, 
+      activeDate: targetDate ? targetDate.toISOString().split('T')[0] : (filterDate || null) 
+    };
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : String(err);
     console.log("Database connection failed, using empty list:", message);
-    return [];
+    return { cities: [], activeDate: null };
   }
 }
 
 export default async function Dashboard({ searchParams }: { searchParams: Promise<{ date?: string, page?: string }> }) {
   const params = await searchParams;
-  const cities = await getCities(params.date);
+  const { cities, activeDate } = await getCities(params.date);
+  const displayDate = params.date || activeDate;
   const currentPage = parseInt(params.page || '1');
   const itemsPerPage = 9;
   
@@ -93,7 +110,7 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
           <div className={styles.headerTitleArea}>
             <h1 className={styles.title}>Cities Status</h1>
             <p className={styles.subtitle}>
-                {params.date ? `Showing data for ${params.date}` : "Live data overview across all dates"}
+                {displayDate ? `Showing data for ${displayDate}` : "Live data overview across all dates"}
             </p>
           </div>
           
@@ -161,13 +178,12 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
                   <th>Process Status</th>
                   <th>Visual Progress</th>
                   <th>Files Count</th>
-                  <th>Reference Date</th>
                 </tr>
               </thead>
               <tbody>
                 {cities.length === 0 && (
                    <tr>
-                     <td colSpan={5} style={{textAlign: 'center', padding: '60px', color: 'var(--text-secondary)'}}>
+                     <td colSpan={4} style={{textAlign: 'center', padding: '60px', color: 'var(--text-secondary)'}}>
                         <div className={styles.emptyState}>
                             <Filter size={48} style={{opacity: 0.2, marginBottom: '16px'}} />
                             <p>No records found for the selected criteria.</p>
@@ -210,9 +226,6 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
                         <FolderSync size={14} style={{opacity: 0.5}} />
                         <span>{city.pages || 0}</span>
                       </div>
-                    </td>
-                    <td>
-                       <span className={styles.dateLabel}>{city.date || 'N/A'}</span>
                     </td>
                   </tr>
                 ))}

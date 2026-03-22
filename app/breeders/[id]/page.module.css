@@ -1,0 +1,184 @@
+.main {
+  padding: 40px 48px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.backButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  padding: 8px 16px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--card-border);
+  width: fit-content;
+}
+
+.backButton:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateX(-4px);
+}
+
+.breederInfo {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  border-bottom: 1px solid var(--card-border);
+  padding-bottom: 24px;
+}
+
+.title {
+  font-size: 2.25rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.02em;
+  margin-bottom: 4px;
+}
+
+.breederMeta {
+  display: flex;
+  gap: 20px;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+.metaItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.metaItem .icon {
+  color: var(--text-accent);
+}
+
+.puppiesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 24px;
+}
+
+.puppyCard {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transition: transform 0.3s ease, border-color 0.3s ease;
+  height: 100%;
+}
+
+.puppyCard:hover {
+  transform: translateY(-8px);
+  border-color: var(--text-accent);
+  box-shadow: 0 12px 40px rgba(56, 189, 248, 0.1);
+}
+
+.puppyHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.puppyTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 4px;
+}
+
+.puppyBreed {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.priceTag {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--success-color);
+  padding: 6px 12px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.puppyDetails {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: auto;
+}
+
+.detailBadge {
+  background: rgba(255, 255, 255, 0.04);
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--card-border);
+}
+
+.viewButton {
+  margin-top: 20px;
+  padding: 12px;
+  background: var(--text-accent);
+  color: #020617;
+  text-align: center;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.viewButton:hover {
+  background: #fff;
+  transform: scale(1.02);
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px;
+  color: var(--text-secondary);
+  text-align: center;
+  gap: 16px;
+}
+
+.emptyIcon {
+  color: rgba(255, 255, 255, 0.05);
+}
+
+@media (max-width: 768px) {
+  .main {
+    padding: 24px;
+  }
+  .breederInfo {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  .puppiesGrid {
+    grid-template-columns: 1fr;
+  }
+}
