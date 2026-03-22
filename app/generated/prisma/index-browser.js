@@ -125,7 +125,8 @@ exports.Prisma.CityProgressScalarFieldEnum = {
   city: 'city',
   status: 'status',
   pages: 'pages',
-  date: 'date'
+  date: 'date',
+  priority: 'priority'
 };
 
 exports.Prisma.ContactMessageScalarFieldEnum = {

@@ -8,11 +8,12 @@ datasource db {
 }
 
 model CityProgress {
-  id     Int     @id @default(autoincrement())
-  city   String
-  status String? @default("working")
-  pages  Int?
-  date   String?
+  id       Int     @id @default(autoincrement())
+  city     String
+  status   String? @default("working")
+  pages    Int?
+  date     String?
+  priority Int?    @default(0)
 
   @@unique([city, date])
   @@map("cities_table")

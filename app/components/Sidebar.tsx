@@ -1,6 +1,6 @@
 "use client";
 
-import { Activity, Database, LayoutDashboard, MessageSquare } from "lucide-react";
+import { Activity, Database, LayoutDashboard, MessageSquare, Zap } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import styles from "./Sidebar.module.css";
@@ -38,6 +38,13 @@ export default function Sidebar() {
         >
           <MessageSquare size={20} />
           Contact Us
+        </Link>
+        <Link 
+          href="/priority" 
+          className={`${styles.navLink} ${pathname === "/priority" ? styles.active : ""}`}
+        >
+          <Zap size={20} />
+          Request special scraping priority
         </Link>
       </nav>
 
