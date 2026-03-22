@@ -4,7 +4,7 @@
   --bg-color: #020617; /* Slate 950 */
   --bg-gradient: radial-gradient(circle at 0% 0%, rgba(30, 41, 59, 0.4) 0%, transparent 50%),
                  radial-gradient(circle at 100% 100%, rgba(15, 23, 42, 0.4) 0%, transparent 50%);
-  --sidebar-bg: rgba(15, 23, 42, 0.8);
+  --sidebar-bg: rgba(15, 23, 42, 0.85);
   --card-bg: rgba(30, 41, 59, 0.3);
   --card-border: rgba(255, 255, 255, 0.08);
   --text-primary: #f8fafc;
@@ -26,7 +26,7 @@
 
 html, body {
   width: 100%;
-  height: 100vh;
+  height: 100%;
   margin: 0;
   padding: 0;
   font-family: 'Plus Jakarta Sans', 'Tajawal', sans-serif;
@@ -107,6 +107,7 @@ button {
   gap: 8px;
   letter-spacing: 0.02em;
   text-transform: uppercase;
+  white-space: nowrap;
 }
 
 .badge.pending {
@@ -132,21 +133,27 @@ button {
 .dashboard-layout {
   display: grid;
   grid-template-columns: 280px 1fr;
-  height: 100vh;
-  overflow: hidden;
+  min-height: 100vh;
   background: var(--bg-color);
 }
 
 .main-content {
   overflow-y: auto;
-  height: 100vh;
+  min-height: 100vh;
   background: var(--bg-gradient);
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 1024px) {
   .dashboard-layout {
     grid-template-columns: 1fr;
-    height: auto;
-    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
   }
+}
+
+/* Helper classes for better mobile experience */
+@media (max-width: 640px) {
+    .hide-on-mobile {
+        display: none !important;
+    }
 }

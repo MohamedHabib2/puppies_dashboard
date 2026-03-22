@@ -1,6 +1,5 @@
 .main {
   padding: 40px 48px;
-  overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 32px;
@@ -151,11 +150,13 @@
 
 .tableContainer {
   overflow-x: auto;
+  border-radius: 20px;
 }
 
 .table {
   width: 100%;
   border-collapse: collapse;
+  min-width: 600px;
 }
 
 .table th {
@@ -250,25 +251,6 @@
     opacity: 0.8;
 }
 
-@media (max-width: 1200px) {
-  .dashboard {
-    grid-template-columns: 1fr;
-    height: auto;
-    overflow-y: auto;
-  }
-  .sidebar {
-    display: none;
-  }
-  .main {
-      padding: 30px 20px;
-  }
-  .header {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 20px;
-  }
-}
-
 /* Pagination Styles */
 .pagination {
     display: flex;
@@ -323,4 +305,50 @@
 
 .pageLink svg {
     opacity: 0.7;
+}
+
+/* Responsiveness */
+@media (max-width: 1024px) {
+  .main {
+    padding: 24px 20px;
+    gap: 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  
+  .title {
+      font-size: 1.75rem;
+  }
+  
+  .headerActions {
+      width: 100%;
+  }
+
+  .statsGrid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+    .pagination {
+        flex-direction: column;
+        gap: 16px;
+        align-items: flex-start;
+    }
+    
+    .paginationControls {
+        width: 100%;
+    }
+    
+    .pageLink {
+        flex: 1;
+        justify-content: center;
+    }
 }
